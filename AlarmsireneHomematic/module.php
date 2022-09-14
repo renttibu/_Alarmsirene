@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @project       _Alarmsirene/AlarmsireneHomematicIP
+ * @project       _Alarmsirene/AlarmsireneHomematic
  * @file          module.php
  * @author        Ulrich Bittner
  * @copyright     2022 Ulrich Bittner
@@ -14,19 +14,19 @@
 
 declare(strict_types=1);
 
-include_once __DIR__ . '/helper/ASIRHMIP_autoload.php';
+include_once __DIR__ . '/helper/ASIRHM_autoload.php';
 
-class AlarmsireneHomematicIP extends IPSModule
+class AlarmsireneHomematic extends IPSModule
 {
     //Helper
-    use ASIRHMIP_Config;
-    use ASIRHMIP_Control;
-    use ASIRHMIP_Signaling;
-    use ASIRHMIP_TriggerCondition;
+    use ASIRHM_Config;
+    use ASIRHM_Control;
+    use ASIRHM_Signaling;
+    use ASIRHM_TriggerCondition;
 
     //Constants
-    private const MODULE_NAME = 'Alarmsirene Homematic IP';
-    private const MODULE_PREFIX = 'ASIRHMIP';
+    private const MODULE_NAME = 'Alarmsirene Homematic';
+    private const MODULE_PREFIX = 'ASIRHM';
     private const MODULE_VERSION = '7.0-1, 08.09.2022';
     private const ABLAUFSTEUERUNG_MODULE_GUID = '{0559B287-1052-A73E-B834-EBD9B62CB938}';
     private const ABLAUFSTEUERUNG_MODULE_PREFIX = 'AST';
@@ -40,16 +40,21 @@ class AlarmsireneHomematicIP extends IPSModule
 
         $this->RegisterPropertyString('Note', '');
         $this->RegisterPropertyBoolean('EnableActive', false);
-        $this->RegisterPropertyBoolean('EnableAlarmSiren', true);
-        $this->RegisterPropertyBoolean('EnableAcousticSignal', true);
-        $this->RegisterPropertyBoolean('EnableOpticalSignal', true);
-        $this->RegisterPropertyBoolean('EnableDurationUnit', true);
-        $this->RegisterPropertyBoolean('EnableDurationValue', true);
-        $this->RegisterPropertyInteger('DeviceType', 0);
-        $this->RegisterPropertyInteger('DeviceInstance', 0);
+        $this->RegisterPropertyBoolean('EnableAcousticAlarm', true);
+        $this->RegisterPropertyBoolean('EnableOpticalAlarm', true);
+        $this->RegisterPropertyBoolean('EnableToneAcknowledgement', false);
+        $this->RegisterPropertyInteger('DeviceTypeAcousticAlarm', 0);
+        $this->RegisterPropertyInteger('DeviceInstanceAcousticAlarm', 0);
         $this->RegisterPropertyInteger('DeviceStateAcousticAlarm', 0);
+        $this->RegisterPropertyInteger('SwitchingDelayAcousticAlarm', 0);
+        $this->RegisterPropertyInteger('DeviceTypeOpticalAlarm', 0);
+        $this->RegisterPropertyInteger('DeviceInstanceOpticalAlarm', 0);
         $this->RegisterPropertyInteger('DeviceStateOpticalAlarm', 0);
-        $this->RegisterPropertyInteger('SwitchingDelay', 0);
+        $this->RegisterPropertyInteger('SwitchingDelayOpticalAlarm', 0);
+        $this->RegisterPropertyInteger('DeviceTypeToneAcknowledgement', 0);
+        $this->RegisterPropertyInteger('DeviceInstanceToneAcknowledgement', 0);
+        $this->RegisterPropertyInteger('DeviceStateToneAcknowledgement', 0);
+        $this->RegisterPropertyInteger('SwitchingDelayToneAcknowledgement', 0);
         $this->RegisterPropertyInteger('CommandControl', 0);
         $this->RegisterPropertyString('TriggerList', '[]');
         $this->RegisterPropertyBoolean('UseAutomaticDeactivation', false);
@@ -66,82 +71,34 @@ class AlarmsireneHomematicIP extends IPSModule
             $this->SetValue('Active', true);
         }
 
-        //Alarm siren
-        $id = @$this->GetIDForIdent('AlarmSiren');
-        $this->RegisterVariableBoolean('AlarmSiren', 'Alarmsirene', '~Switch', 20);
-        $this->EnableAction('AlarmSiren');
+        //Acoustic alarm
+        $id = @$this->GetIDForIdent('AcousticAlarm');
+        $this->RegisterVariableBoolean('AcousticAlarm', 'Akustischer Alarm', '~Switch', 20);
+        $this->EnableAction('AcousticAlarm');
         if (!$id) {
-            IPS_SetIcon($this->GetIDForIdent('AlarmSiren'), 'Alert');
+            IPS_SetIcon($this->GetIDForIdent('AcousticAlarm'), 'Alert');
         }
 
-        //Acoustic signal
-        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.AcousticSignal';
+        //Optical alarm
+        $id = @$this->GetIDForIdent('OpticalAlarm');
+        $this->RegisterVariableBoolean('OpticalAlarm', 'Optischer Alarm', '~Switch', 30);
+        $this->EnableAction('OpticalAlarm');
+        if (!$id) {
+            IPS_SetIcon($this->GetIDForIdent('OpticalAlarm'), 'Bulb');
+        }
+
+        //Tone acknowledgement
+        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.ToneAcknowledgement';
         if (!IPS_VariableProfileExists($profile)) {
             IPS_CreateVariableProfile($profile, 1);
             IPS_SetVariableProfileIcon($profile, 'Speaker');
         }
-        IPS_SetVariableProfileAssociation($profile, 0, 'Kein akustisches Signal', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 1, 'Frequenz steigend', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 2, 'Frequenz fallend', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 3, 'Frequenz steigend/fallend', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 4, 'Frequenz tief/hoch', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 5, 'Frequenz tief/mittel/hoch', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 6, 'Frequenz hoch ein/aus', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 7, 'Frequenz hoch ein, lang aus', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 8, 'Frequenz tief ein/aus, hoch ein/aus', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 9, 'Frequenz tief ein - lang aus, hoch ein - lang aus', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 10, 'Batterie leer', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 11, 'Unscharf', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 12, 'Intern Scharf', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 13, 'Extern Scharf', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 14, 'Intern verzögert Scharf', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 15, 'Extern verzögert Scharf', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 16, 'Ereignis', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 17, 'Fehler', '', -1);
-        $this->RegisterVariableInteger('AcousticSignal', 'Akustisches Signal', $profile, 30);
-        $this->EnableAction('AcousticSignal');
-
-        //Optical signal
-        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.OpticalSignal';
-        if (!IPS_VariableProfileExists($profile)) {
-            IPS_CreateVariableProfile($profile, 1);
-            IPS_SetVariableProfileIcon($profile, 'Bulb');
-        }
-        IPS_SetVariableProfileAssociation($profile, 0, 'Kein optisches Signal', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 1, 'Abwechselndes langsames Blinken', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 2, 'Gleichzeitiges langsames Blinken', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 3, 'Gleichzeitiges schnelles Blinken', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 4, 'Gleichzeitiges kurzes Blinken', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 5, 'Bestätigungssignal 0 - lang lang', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 6, 'Bestätigungssignal 1 - lang kurz', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 7, 'Bestätigungssignal 2 - lang kurz kurz', '', -1);
-        $this->RegisterVariableInteger('OpticalSignal', 'Optisches Signal', $profile, 40);
-        $this->EnableAction('OpticalSignal');
-
-        //Duration unit
-        $id = @$this->GetIDForIdent('DurationUnit');
-        $profile = self::MODULE_PREFIX . '.' . $this->InstanceID . '.DurationUnit';
-        if (!IPS_VariableProfileExists($profile)) {
-            IPS_CreateVariableProfile($profile, 1);
-            IPS_SetVariableProfileIcon($profile, 'Clock');
-        }
-        IPS_SetVariableProfileAssociation($profile, 0, 'Sekunden', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 1, 'Minuten', '', -1);
-        IPS_SetVariableProfileAssociation($profile, 2, 'Stunden', '', -1);
-        $this->RegisterVariableInteger('DurationUnit', 'Einheit Zeitdauer', $profile, 50);
-        $this->EnableAction('DurationUnit');
-        if (!$id) {
-            $this->SetValue('DurationUnit', 0);
-        }
-
-        //Duration value
-        $id = @$this->GetIDForIdent('DurationValue');
-        $this->RegisterVariableInteger('DurationValue', 'Wert Zeitdauer', '', 60);
-        $this->EnableAction('DurationValue');
-        if (!$id) {
-            @IPS_SetIcon(@$this->GetIDForIdent('DurationValue'), 'Hourglass');
-            $this->SetValue('DurationValue', 5);
-        }
+        IPS_SetVariableProfileAssociation($profile, 0, 'Alarm Aus', '', 0x00FF00);
+        IPS_SetVariableProfileAssociation($profile, 1, 'Außensensoren scharf (intern scharf)', '', 0x0000FF);
+        IPS_SetVariableProfileAssociation($profile, 2, 'Alle Sensoren scharf (extern scharf)', '', 0xFF0000);
+        IPS_SetVariableProfileAssociation($profile, 3, 'Alarm blockiert', '', 0x00FFFF);
+        $this->RegisterVariableInteger('ToneAcknowledgement', 'Quittungston', $profile, 40);
+        $this->EnableAction('ToneAcknowledgement');
 
         ########## Timers
 
@@ -179,9 +136,13 @@ class AlarmsireneHomematicIP extends IPSModule
 
         //Register references and update messages
         $names = [];
-        $names[] = ['propertyName' => 'DeviceInstance', 'useUpdate' => false];
+        $names[] = ['propertyName' => 'DeviceInstanceAcousticAlarm', 'useUpdate' => false];
         $names[] = ['propertyName' => 'DeviceStateAcousticAlarm', 'useUpdate' => true];
+        $names[] = ['propertyName' => 'DeviceInstanceOpticalAlarm', 'useUpdate' => false];
         $names[] = ['propertyName' => 'DeviceStateOpticalAlarm', 'useUpdate' => true];
+        $names[] = ['propertyName' => 'DeviceInstanceToneAcknowledgement', 'useUpdate' => false];
+        $names[] = ['propertyName' => 'DeviceStateToneAcknowledgement', 'useUpdate' => true];
+        $names[] = ['propertyName' => 'CommandControl', 'useUpdate' => false];
 
         foreach ($names as $name) {
             $id = $this->ReadPropertyInteger($name['propertyName']);
@@ -232,11 +193,9 @@ class AlarmsireneHomematicIP extends IPSModule
 
         //WebFront options
         IPS_SetHidden($this->GetIDForIdent('Active'), !$this->ReadPropertyBoolean('EnableActive'));
-        IPS_SetHidden($this->GetIDForIdent('AlarmSiren'), !$this->ReadPropertyBoolean('EnableAlarmSiren'));
-        IPS_SetHidden($this->GetIDForIdent('AcousticSignal'), !$this->ReadPropertyBoolean('EnableAcousticSignal'));
-        IPS_SetHidden($this->GetIDForIdent('OpticalSignal'), !$this->ReadPropertyBoolean('EnableOpticalSignal'));
-        IPS_SetHidden($this->GetIDForIdent('DurationUnit'), !$this->ReadPropertyBoolean('EnableDurationUnit'));
-        IPS_SetHidden($this->GetIDForIdent('DurationValue'), !$this->ReadPropertyBoolean('EnableDurationValue'));
+        IPS_SetHidden($this->GetIDForIdent('AcousticAlarm'), !$this->ReadPropertyBoolean('EnableAcousticAlarm'));
+        IPS_SetHidden($this->GetIDForIdent('OpticalAlarm'), !$this->ReadPropertyBoolean('EnableOpticalAlarm'));
+        IPS_SetHidden($this->GetIDForIdent('ToneAcknowledgement'), !$this->ReadPropertyBoolean('EnableToneAcknowledgement'));
 
         $this->SetAutomaticDeactivationTimer();
         $this->CheckAutomaticDeactivationTimer();
@@ -252,7 +211,7 @@ class AlarmsireneHomematicIP extends IPSModule
         parent::Destroy();
 
         //Delete profiles
-        $profiles = ['AcousticSignal', 'OpticalSignal', 'DurationUnit'];
+        $profiles = ['ToneAcknowledgement'];
         if (!empty($profiles)) {
             foreach ($profiles as $profile) {
                 $profileName = self::MODULE_PREFIX . '.' . $this->InstanceID . '.' . $profile;
@@ -280,21 +239,28 @@ class AlarmsireneHomematicIP extends IPSModule
                 //$Data[4] = timestamp value changed
                 //$Data[5] = timestamp last value
 
-                if ($SenderID == $this->ReadPropertyInteger('DeviceStateAcousticAlarm') || $SenderID == $this->ReadPropertyInteger('DeviceStateOpticalAlarm')) {
-                    $this->CheckDeviceState();
+                $trigger = true;
+                $names = ['DeviceStateAcousticAlarm', 'DeviceStateOpticalAlarm', 'DeviceStateToneAcknowledgement'];
+                foreach ($names as $name) {
+                    if ($SenderID == $this->ReadPropertyInteger($name)) {
+                        $this->CheckDeviceState();
+                        $trigger = false;
+                    }
                 }
 
                 if ($this->CheckMaintenance()) {
                     return;
                 }
 
-                //Check trigger conditions
-                $valueChanged = 'false';
-                if ($Data[1]) {
-                    $valueChanged = 'true';
+                if ($trigger) {
+                    //Check trigger conditions
+                    $valueChanged = 'false';
+                    if ($Data[1]) {
+                        $valueChanged = 'true';
+                    }
+                    $scriptText = self::MODULE_PREFIX . '_CheckTriggerConditions(' . $this->InstanceID . ', ' . $SenderID . ', ' . $valueChanged . ');';
+                    @IPS_RunScriptText($scriptText);
                 }
-                $scriptText = self::MODULE_PREFIX . '_CheckTriggerConditions(' . $this->InstanceID . ', ' . $SenderID . ', ' . $valueChanged . ');';
-                @IPS_RunScriptText($scriptText);
                 break;
 
         }
@@ -320,19 +286,21 @@ class AlarmsireneHomematicIP extends IPSModule
             case 'Active':
                 $this->SetValue($Ident, $Value);
                 if (!$Value) {
-                    $this->ToggleAlarmSiren(false);
+                    $this->ToggleAcousticAlarm(false);
+                    $this->ToggleOpticalAlarm(false);
                 }
                 break;
 
-            case 'AlarmSiren':
-                $this->ToggleAlarmSiren($Value);
+            case 'AcousticAlarm':
+                $this->ToggleAcousticAlarm($Value);
                 break;
 
-            case 'AcousticSignal':
-            case 'OpticalSignal':
-            case 'DurationUnit':
-            case 'DurationValue':
-                $this->SetValue($Ident, $Value);
+            case 'OpticalAlarm':
+                $this->ToggleOpticalAlarm($Value);
+                break;
+
+            case 'ToneAcknowledgement':
+                $this->ExecuteToneAcknowledgement($Value);
                 break;
 
         }

@@ -1,8 +1,10 @@
 <?php
 
+/** @noinspection DuplicatedCode */
+
 /**
- * @project       _Alarmsirene/AlarmsireneHomematicIP
- * @file          ASIRHMIP_Config.php
+ * @project       _Alarmsirene/AlarmsireneHomematic
+ * @file          ASIRHM_Config.php
  * @author        Ulrich Bittner
  * @copyright     2022 Ulrich Bittner
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
@@ -12,7 +14,7 @@
 
 declare(strict_types=1);
 
-trait ASIRHMIP_Config
+trait ASIRHM_Config
 {
     /**
      * Reloads the configuration form.
@@ -88,7 +90,7 @@ trait ASIRHMIP_Config
             'items'   => [
                 [
                     'type'  => 'Image',
-                    'image' => 'data:image/png;base64, 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'
+                    'image' => 'data:image/png;base64, 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'
                 ],
                 [
                     'type'    => 'Label',
@@ -134,60 +136,45 @@ trait ASIRHMIP_Config
                 ],
                 [
                     'type'    => 'CheckBox',
-                    'name'    => 'EnableAlarmSiren',
-                    'caption' => 'Alarmsirene'
+                    'name'    => 'EnableAcousticAlarm',
+                    'caption' => 'Akustischer Alarm'
                 ],
                 [
                     'type'    => 'CheckBox',
-                    'name'    => 'EnableAcousticSignal',
-                    'caption' => 'Akustisches Signal'
+                    'name'    => 'EnableOpticalAlarm',
+                    'caption' => 'Optischer Alarm'
                 ],
                 [
                     'type'    => 'CheckBox',
-                    'name'    => 'EnableOpticalSignal',
-                    'caption' => 'Optisches Signal'
-                ],
-                [
-                    'type'    => 'CheckBox',
-                    'name'    => 'EnableDurationUnit',
-                    'caption' => 'Einheit Zeitdauer'
-                ],
-                [
-                    'type'    => 'CheckBox',
-                    'name'    => 'EnableDurationValue',
-                    'caption' => 'Wert Zeitdauer'
+                    'name'    => 'EnableToneAcknowledgement',
+                    'caption' => 'Quittungston'
                 ]
             ]
         ];
 
-        //Alarm siren
-        $deviceInstance = $this->ReadPropertyInteger('DeviceInstance');
-        $enableDeviceInstanceButton = false;
-        if ($deviceInstance > 1 && @IPS_ObjectExists($deviceInstance)) { //0 = main category, 1 = none
-            $enableDeviceInstanceButton = true;
+        ##### Acoustic alarm
+
+        //Acoustic alarm instance
+        $deviceInstanceAcousticAlarm = $this->ReadPropertyInteger('DeviceInstanceAcousticAlarm');
+        $enableDeviceInstanceAcousticAlarmButton = false;
+        if ($deviceInstanceAcousticAlarm > 1 && @IPS_ObjectExists($deviceInstanceAcousticAlarm)) { //0 = main category, 1 = none
+            $enableDeviceInstanceAcousticAlarmButton = true;
         }
 
-        //Acoustic state
+        //Acoustic alarm state
         $deviceStateAcousticAlarm = $this->ReadPropertyInteger('DeviceStateAcousticAlarm');
         $enableDeviceStateAcousticAlarmButton = false;
         if ($deviceStateAcousticAlarm > 1 && @IPS_ObjectExists($deviceStateAcousticAlarm)) { //0 = main category, 1 = none
             $enableDeviceStateAcousticAlarmButton = true;
         }
 
-        //Optical state
-        $deviceStateOpticalAlarm = $this->ReadPropertyInteger('DeviceStateOpticalAlarm');
-        $enableDeviceStateOpticalAlarmButton = false;
-        if ($deviceStateOpticalAlarm > 1 && @IPS_ObjectExists($deviceStateOpticalAlarm)) { //0 = main category, 1 = none
-            $enableDeviceStateOpticalAlarmButton = true;
-        }
-
         $form['elements'][] = [
             'type'    => 'ExpansionPanel',
-            'caption' => 'Alarmsirene',
+            'caption' => 'Akustischer Alarm',
             'items'   => [
                 [
                     'type'    => 'Select',
-                    'name'    => 'DeviceType',
+                    'name'    => 'DeviceTypeAcousticAlarm',
                     'caption' => 'Typ',
                     'options' => [
                         [
@@ -195,15 +182,15 @@ trait ASIRHMIP_Config
                             'value'   => 0
                         ],
                         [
-                            'caption' => 'HmIP-ASIR, Kanal 3',
+                            'caption' => 'HM-Sec-Sir-WM, Kanal 3',
                             'value'   => 1
                         ],
                         [
-                            'caption' => 'HmIP-ASIR-2, Kanal 3',
+                            'caption' => 'HM-Sec-SFA-SM, Kanal 1',
                             'value'   => 2
                         ],
                         [
-                            'caption' => 'HmIP-ASIR-O, Kanal 3',
+                            'caption' => 'HM-LC-Sw4-WM, Kanal n',
                             'value'   => 3
                         ]
                     ]
@@ -213,10 +200,10 @@ trait ASIRHMIP_Config
                     'items' => [
                         [
                             'type'     => 'SelectInstance',
-                            'name'     => 'DeviceInstance',
-                            'caption'  => 'Instanz',
+                            'name'     => 'DeviceInstanceAcousticAlarm',
+                            'caption'  => 'Instanz (Akustischer Alarm)',
                             'width'    => '600px',
-                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceInstanceConfigurationButton", "ID " . $DeviceInstance . " Instanzkonfiguration", $DeviceInstance);'
+                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceInstanceAcousticAlarmConfigurationButton", "ID " . $DeviceInstanceAcousticAlarm . " Instanzkonfiguration", $DeviceInstanceAcousticAlarm);'
                         ],
                         [
                             'type'    => 'Label',
@@ -224,10 +211,10 @@ trait ASIRHMIP_Config
                         ],
                         [
                             'type'     => 'OpenObjectButton',
-                            'name'     => 'DeviceInstanceConfigurationButton',
-                            'caption'  => 'ID ' . $deviceInstance . ' Instanzkonfiguration',
-                            'visible'  => $enableDeviceInstanceButton,
-                            'objectID' => $deviceInstance
+                            'name'     => 'DeviceInstanceAcousticAlarmConfigurationButton',
+                            'caption'  => 'ID ' . $deviceInstanceAcousticAlarm . ' Instanzkonfiguration',
+                            'visible'  => $enableDeviceInstanceAcousticAlarmButton,
+                            'objectID' => $deviceInstanceAcousticAlarm
                         ]
                     ]
                 ],
@@ -237,7 +224,7 @@ trait ASIRHMIP_Config
                         [
                             'type'     => 'SelectVariable',
                             'name'     => 'DeviceStateAcousticAlarm',
-                            'caption'  => 'Variable ACOUSTIC_ALARM_ACTIVE (Akustischer Alarm)',
+                            'caption'  => 'Variable STATE',
                             'width'    => '600px',
                             'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceStateAcousticAlarmConfigurationButton", "ID " . $DeviceStateAcousticAlarm . " bearbeiten", $DeviceStateAcousticAlarm);'
                         ],
@@ -255,14 +242,86 @@ trait ASIRHMIP_Config
                     ]
                 ],
                 [
+                    'type'    => 'NumberSpinner',
+                    'name'    => 'SwitchingDelayAcousticAlarm',
+                    'caption' => 'Schaltverzögerung',
+                    'minimum' => 0,
+                    'suffix'  => 'Millisekunden'
+                ]
+            ]
+        ];
+
+        ##### Optical alarm
+
+        //Optical alarm instance
+        $deviceInstanceOpticalAlarm = $this->ReadPropertyInteger('DeviceInstanceOpticalAlarm');
+        $enableDeviceInstanceOpticalAlarmButton = false;
+        if ($deviceInstanceOpticalAlarm > 1 && @IPS_ObjectExists($deviceInstanceOpticalAlarm)) { //0 = main category, 1 = none
+            $enableDeviceInstanceOpticalAlarmButton = true;
+        }
+
+        //Optical alarm state
+        $deviceStateOpticalAlarm = $this->ReadPropertyInteger('DeviceStateOpticalAlarm');
+        $enableDeviceStateOpticalAlarmButton = false;
+        if ($deviceStateOpticalAlarm > 1 && @IPS_ObjectExists($deviceStateOpticalAlarm)) { //0 = main category, 1 = none
+            $enableDeviceStateOpticalAlarmButton = true;
+        }
+
+        $form['elements'][] = [
+            'type'    => 'ExpansionPanel',
+            'caption' => 'Optischer Alarm',
+            'items'   => [
+                [
+                    'type'    => 'Select',
+                    'name'    => 'DeviceTypeOpticalAlarm',
+                    'caption' => 'Typ',
+                    'options' => [
+                        [
+                            'caption' => 'Kein Gerät',
+                            'value'   => 0
+                        ],
+                        [
+                            'caption' => 'HM-Sec-SFA-SM, Kanal 2',
+                            'value'   => 1
+                        ],
+                        [
+                            'caption' => 'HM-LC-Sw4-WM, Kanal n',
+                            'value'   => 2
+                        ]
+                    ]
+                ],
+                [
+                    'type'  => 'RowLayout',
+                    'items' => [
+                        [
+                            'type'     => 'SelectInstance',
+                            'name'     => 'DeviceInstanceOpticalAlarm',
+                            'caption'  => 'Instanz (Optischer Alarm)',
+                            'width'    => '600px',
+                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceInstanceOpticalAlarmConfigurationButton", "ID " . $DeviceInstanceOpticalAlarm . " Instanzkonfiguration", $DeviceInstanceOpticalAlarm);'
+                        ],
+                        [
+                            'type'    => 'Label',
+                            'caption' => ' '
+                        ],
+                        [
+                            'type'     => 'OpenObjectButton',
+                            'name'     => 'DeviceInstanceOpticalAlarmConfigurationButton',
+                            'caption'  => 'ID ' . $deviceInstanceOpticalAlarm . ' Instanzkonfiguration',
+                            'visible'  => $enableDeviceInstanceOpticalAlarmButton,
+                            'objectID' => $deviceInstanceOpticalAlarm
+                        ]
+                    ]
+                ],
+                [
                     'type'  => 'RowLayout',
                     'items' => [
                         [
                             'type'     => 'SelectVariable',
                             'name'     => 'DeviceStateOpticalAlarm',
-                            'caption'  => 'Variable OPTICAL_ALARM_ACTIVE (Optischer Alarm)',
+                            'caption'  => 'Variable STATE',
                             'width'    => '600px',
-                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceStateOpticalAlarmConfigurationButton", "ID " . $DeviceStateOpticalAlarm . " aufrufen", $DeviceStateOpticalAlarm);'
+                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceStateOpticalAlarmConfigurationButton", "ID " . $DeviceStateOpticalAlarm . " bearbeiten", $DeviceStateOpticalAlarm);'
                         ],
                         [
                             'type'    => 'Label',
@@ -279,7 +338,98 @@ trait ASIRHMIP_Config
                 ],
                 [
                     'type'    => 'NumberSpinner',
-                    'name'    => 'SwitchingDelay',
+                    'name'    => 'SwitchingDelayOpticalAlarm',
+                    'caption' => 'Schaltverzögerung',
+                    'minimum' => 0,
+                    'suffix'  => 'Millisekunden'
+                ]
+            ]
+        ];
+
+        ##### Tone acknowledgement
+
+        //Tone acknowledgement instance
+        $deviceInstanceToneAcknowledgement = $this->ReadPropertyInteger('DeviceInstanceToneAcknowledgement');
+        $enableDeviceInstanceToneAcknowledgementButton = false;
+        if ($deviceInstanceToneAcknowledgement > 1 && @IPS_ObjectExists($deviceInstanceToneAcknowledgement)) { //0 = main category, 1 = none
+            $enableDeviceInstanceToneAcknowledgementButton = true;
+        }
+
+        //Tone acknowledgement state
+        $deviceStateToneAcknowledgement = $this->ReadPropertyInteger('DeviceStateToneAcknowledgement');
+        $enableDeviceStateToneAcknowledgementButton = false;
+        if ($deviceStateToneAcknowledgement > 1 && @IPS_ObjectExists($deviceStateToneAcknowledgement)) { //0 = main category, 1 = none
+            $enableDeviceStateToneAcknowledgementButton = true;
+        }
+
+        $form['elements'][] = [
+            'type'    => 'ExpansionPanel',
+            'caption' => 'Quittungston',
+            'items'   => [
+                [
+                    'type'    => 'Select',
+                    'name'    => 'DeviceTypeToneAcknowledgement',
+                    'caption' => 'Typ',
+                    'options' => [
+                        [
+                            'caption' => 'Kein Gerät',
+                            'value'   => 0
+                        ],
+                        [
+                            'caption' => 'HM-Sec-Sir-WM, Kanal 4',
+                            'value'   => 1
+                        ]
+                    ]
+                ],
+                [
+                    'type'  => 'RowLayout',
+                    'items' => [
+                        [
+                            'type'     => 'SelectInstance',
+                            'name'     => 'DeviceInstanceToneAcknowledgement',
+                            'caption'  => 'Instanz (Quittungston)',
+                            'width'    => '600px',
+                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceInstanceToneAcknowledgementConfigurationButton", "ID " . $DeviceInstanceToneAcknowledgement . " Instanzkonfiguration", $DeviceInstanceToneAcknowledgement);'
+                        ],
+                        [
+                            'type'    => 'Label',
+                            'caption' => ' '
+                        ],
+                        [
+                            'type'     => 'OpenObjectButton',
+                            'name'     => 'DeviceInstanceToneAcknowledgementConfigurationButton',
+                            'caption'  => 'ID ' . $deviceInstanceToneAcknowledgement . ' Instanzkonfiguration',
+                            'visible'  => $enableDeviceInstanceToneAcknowledgementButton,
+                            'objectID' => $deviceInstanceToneAcknowledgement
+                        ]
+                    ]
+                ],
+                [
+                    'type'  => 'RowLayout',
+                    'items' => [
+                        [
+                            'type'     => 'SelectVariable',
+                            'name'     => 'DeviceStateToneAcknowledgement',
+                            'caption'  => 'Variable ARMSTATE',
+                            'width'    => '600px',
+                            'onChange' => self::MODULE_PREFIX . '_ModifyButton($id, "DeviceStateToneAcknowledgementConfigurationButton", "ID " . $DeviceStateToneAcknowledgement . " bearbeiten", $DeviceStateToneAcknowledgement);'
+                        ],
+                        [
+                            'type'    => 'Label',
+                            'caption' => ' '
+                        ],
+                        [
+                            'type'     => 'OpenObjectButton',
+                            'name'     => 'DeviceStateToneAcknowledgementConfigurationButton',
+                            'caption'  => 'ID ' . $deviceStateToneAcknowledgement . ' bearbeiten',
+                            'visible'  => $enableDeviceStateToneAcknowledgementButton,
+                            'objectID' => $deviceStateToneAcknowledgement
+                        ]
+                    ]
+                ],
+                [
+                    'type'    => 'NumberSpinner',
+                    'name'    => 'SwitchingDelayToneAcknowledgement',
                     'caption' => 'Schaltverzögerung',
                     'minimum' => 0,
                     'suffix'  => 'Millisekunden'
@@ -454,166 +604,83 @@ trait ASIRHMIP_Config
                             ]
                         ],
                         [
-                            'caption' => 'Akustisches Signal',
-                            'name'    => 'AcousticSignal',
+                            'caption' => 'Akustischer Alarm',
+                            'name'    => 'AcousticAlarm',
                             'width'   => '300px',
-                            'add'     => 0,
+                            'add'     => 2,
                             'visible' => false,
                             'edit'    => [
                                 'type'    => 'Select',
                                 'options' => [
                                     [
-                                        'caption' => '0 - Kein akustisches Signal',
+                                        'caption' => '0 - Aus',
                                         'value'   => 0
                                     ],
                                     [
-                                        'caption' => '1 - Frequenz steigend',
+                                        'caption' => '1 - An',
                                         'value'   => 1
                                     ],
                                     [
-                                        'caption' => '2 - Frequenz fallend',
+                                        'caption' => '2 - Keine Funktion',
+                                        'value'   => 2
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            'caption' => 'Optischer Alarm',
+                            'name'    => 'OpticalAlarm',
+                            'width'   => '300px',
+                            'add'     => 2,
+                            'visible' => false,
+                            'edit'    => [
+                                'type'    => 'Select',
+                                'options' => [
+                                    [
+                                        'caption' => '0 - Aus',
+                                        'value'   => 0
+                                    ],
+                                    [
+                                        'caption' => '1 - An',
+                                        'value'   => 1
+                                    ],
+                                    [
+                                        'caption' => '2 - Keine Funktion',
+                                        'value'   => 2
+                                    ]
+                                ]
+                            ]
+                        ],
+                        [
+                            'caption' => 'Quittungston',
+                            'name'    => 'ToneAcknowledgement',
+                            'width'   => '300px',
+                            'add'     => 4,
+                            'visible' => false,
+                            'edit'    => [
+                                'type'    => 'Select',
+                                'options' => [
+                                    [
+                                        'caption' => '0 - Alarm Aus',
+                                        'value'   => 0
+                                    ],
+                                    [
+                                        'caption' => '1 - Alle Sensoren scharf (extern scharf)',
+                                        'value'   => 1
+                                    ],
+                                    [
+                                        'caption' => '2 - Außensensoren scharf (intern scharf)',
                                         'value'   => 2
                                     ],
                                     [
-                                        'caption' => '3 - Frequenz steigend/fallend',
+                                        'caption' => '3 - Alarm blockiert',
                                         'value'   => 3
                                     ],
                                     [
-                                        'caption' => '4 - Frequenz tief/hoch',
+                                        'caption' => '4 - Keine Funktion',
                                         'value'   => 4
-                                    ],
-                                    [
-                                        'caption' => '5 - Frequenz tief/mittel/hoch',
-                                        'value'   => 5
-                                    ],
-                                    [
-                                        'caption' => '6 - Frequenz hoch ein/aus',
-                                        'value'   => 6
-                                    ],
-                                    [
-                                        'caption' => '7 - Frequenz hoch ein, lang aus',
-                                        'value'   => 7
-                                    ],
-                                    [
-                                        'caption' => '8 - Frequenz tief ein/aus, hoch ein/aus',
-                                        'value'   => 8
-                                    ],
-                                    [
-                                        'caption' => '9 - Frequenz tief ein - lang aus, hoch ein - lang aus',
-                                        'value'   => 9
-                                    ],
-                                    [
-                                        'caption' => '10 - Batterie leer',
-                                        'value'   => 10
-                                    ],
-                                    [
-                                        'caption' => '11 - Unscharf',
-                                        'value'   => 11
-                                    ],
-                                    [
-                                        'caption' => '12 - Intern scharf',
-                                        'value'   => 12
-                                    ],
-                                    [
-                                        'caption' => '13 - Extern scharf',
-                                        'value'   => 13
-                                    ],
-                                    [
-                                        'caption' => '14 - Verzögert intern scharf',
-                                        'value'   => 14
-                                    ],
-                                    [
-                                        'caption' => '15 - Verzögert extern scharf',
-                                        'value'   => 15
-                                    ],
-                                    [
-                                        'caption' => '16 - Alarm Ereignis',
-                                        'value'   => 16
-                                    ],
-                                    [
-                                        'caption' => '17 - Fehler',
-                                        'value'   => 17
                                     ]
                                 ]
-                            ]
-                        ],
-                        [
-                            'caption' => 'Optisches Signal',
-                            'name'    => 'OpticalSignal',
-                            'width'   => '300px',
-                            'add'     => 0,
-                            'visible' => false,
-                            'edit'    => [
-                                'type'    => 'Select',
-                                'options' => [
-                                    [
-                                        'caption' => '0 - Kein optisches Signal',
-                                        'value'   => 0
-                                    ],
-                                    [
-                                        'caption' => '1 - Abwechselndes langsames Blinken',
-                                        'value'   => 1
-                                    ],
-                                    [
-                                        'caption' => '2 - Gleichzeitiges langsames Blinken',
-                                        'value'   => 2
-                                    ],
-                                    [
-                                        'caption' => '3 - Gleichzeitiges schnelles Blinken',
-                                        'value'   => 3
-                                    ],
-                                    [
-                                        'caption' => '4 - Gleichzeitiges kurzes Blinken',
-                                        'value'   => 4
-                                    ],
-                                    [
-                                        'caption' => '5 - Bestätigungssignal 0 - lang lang',
-                                        'value'   => 5
-                                    ],
-                                    [
-                                        'caption' => '6 - Bestätigungssignal 1 - lang kurz',
-                                        'value'   => 6
-                                    ],
-                                    [
-                                        'caption' => '7 - Bestätigungssignal 2 - lang kurz kurz',
-                                        'value'   => 7
-                                    ]
-                                ]
-                            ]
-                        ],
-                        [
-                            'caption' => 'Einheit Zeitdauer',
-                            'name'    => 'DurationUnit',
-                            'width'   => '200px',
-                            'add'     => 0,
-                            'visible' => false,
-                            'edit'    => [
-                                'type'    => 'Select',
-                                'options' => [
-                                    [
-                                        'caption' => '0 - Sekunden',
-                                        'value'   => 0
-                                    ],
-                                    [
-                                        'caption' => '1 - Minuten',
-                                        'value'   => 1
-                                    ],
-                                    [
-                                        'caption' => '2 - Stunden',
-                                        'value'   => 2
-                                    ]
-                                ]
-                            ]
-                        ],
-                        [
-                            'caption' => 'Wert Zeitdauer',
-                            'name'    => 'DurationValue',
-                            'width'   => '200px',
-                            'add'     => 5,
-                            'visible' => false,
-                            'edit'    => [
-                                'type'    => 'NumberSpinner',
-                                'minimum' => 0
                             ]
                         ]
                     ],
