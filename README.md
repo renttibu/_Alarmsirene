@@ -13,7 +13,7 @@ Folgende Module beinhaltet dieses Repository (in alphabetischer Reihenfolge):
 - __Alarmsirene__ ([Dokumentation](Alarmsirene))  
   Dieses Modul schaltet eine Variable, um eine Alarmsirene zu schalten.
 
-- __Alarmsirene Homematic __ ([Dokumentation](AlarmsireneHomematic))  
+- __Alarmsirene Homematic__ ([Dokumentation](AlarmsireneHomematic))  
   Dieses Modul integriert eine Homematic Alarmsirene.
 
 - __Alarmsirene Homematic IP__ ([Dokumentation](AlarmsireneHomematicIP))  
