@@ -75,6 +75,8 @@ trait ASIR_TriggerCondition
 
                                     case 1:
                                         $this->ToggleAcousticAlarm(true);
+                                        break;
+
                                 }
                                 //Optical Alarm
                                 switch ($variable['OpticalAlarm']) {
@@ -84,6 +86,8 @@ trait ASIR_TriggerCondition
 
                                     case 1:
                                         $this->ToggleOpticalAlarm(true);
+                                        break;
+
                                 }
                             }
                         }

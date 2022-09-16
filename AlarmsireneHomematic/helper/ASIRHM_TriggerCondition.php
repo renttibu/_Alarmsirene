@@ -75,6 +75,8 @@ trait ASIRHM_TriggerCondition
 
                                     case 1:
                                         $this->ToggleAcousticAlarm(true);
+                                        break;
+
                                 }
                                 //Optical Alarm
                                 switch ($variable['OpticalAlarm']) {
@@ -84,6 +86,7 @@ trait ASIRHM_TriggerCondition
 
                                     case 1:
                                         $this->ToggleOpticalAlarm(true);
+                                        break;
                                 }
                                 //Tone acknowledgement
                                 $toneAcknowledgement = $variable['ToneAcknowledgement'];
